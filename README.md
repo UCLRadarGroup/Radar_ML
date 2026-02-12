@@ -1,4 +1,4 @@
-# Radar ML
+# RadarML
 A GIT repo for the Radar_ML dataset, read-me and code
 
 This GIT repo links to the dataset release of the UCL RadarML dataset.
