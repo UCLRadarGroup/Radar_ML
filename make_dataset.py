@@ -2,6 +2,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import hashlib
+import multiprocessing
 from tqdm import tqdm
 from concurrent.futures import ProcessPoolExecutor
 
@@ -25,8 +26,8 @@ target_SNR_dBs = [30, 27, 24, 21, 18, 15, 12, 9, 6, 3, 0, -3, -6, -9, -12, -15, 
 # Get the directory where the script is located
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
-data_dir = os.path.join(script_dir, "raw")
-out_dir = os.path.join(script_dir, "degraded")
+data_dir = os.path.join(script_dir, "unprocessed")
+out_dir = os.path.join(script_dir, "processed")
 os.makedirs(out_dir, exist_ok=True)
 
 def process_file(fname):
