@@ -88,8 +88,9 @@ if __name__ == "__main__":
 
     print(f"Found {len(npy_files)} .npy files to process in parallel.\n")
 
-    # Use all CPU cores
-    with ProcessPoolExecutor() as executor:
+    num_cpus = multiprocessing.cpu_count()
+    max_workers = max(1, int(num_cpus * 0.8))
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
         list(tqdm(executor.map(process_file, npy_files), total=len(npy_files)))
 
     print("All files processed.")
