@@ -36,7 +36,7 @@ def process_file(fname):
     # 3 Sensors, N SNRs, N repeats, 33600 samples
     degraded_array = np.zeros((3, len(target_SNR_dBs), repeats_per_snr, 33600), dtype=np.int16)
 
-    # Load raw data: shape [3, 1000, N]
+    # Load raw data: shape [3, 1000, 33600]
     raw_data = np.load(file_path)
 
     for channel_idx in range(raw_data.shape[0]):
@@ -78,8 +78,32 @@ def process_file(fname):
                 degraded_array[channel_idx, snr_idx, x, :] = row_data_degraded
 
     # Save output
-    name, ext = os.path.splitext(fname)
-    new_name = name + "_degraded" + ext
+    #name, ext = os.path.splitext(fname)
+    
+    name, ext = fname.rsplit(".", 1)
+    parts = name.split("_")
+
+    # Handle range: e.g. 230Mhz-250Mhz
+    if "-" in parts[-1]:
+        left, right = parts[-1].split("-")
+
+        x1 = int(left.replace("Mhz", ""))
+        x2 = int(right.replace("Mhz", ""))
+
+        new_x1 = 240 - int(x1)
+        new_x2 = 240 - int(x2)
+
+        parts[-1] = f"{new_x1}Mhz-{new_x2}Mhz"
+
+    else:
+        # Handle single value: e.g. 270Mhz
+        x = int(parts[-1].replace("Mhz", ""))
+        new_x = 240 - int(x)
+
+        parts[-1] = f"{new_x}Mhz"
+
+    new_name = "_".join(parts) + "_degraded." + ext
+    
     new_loc = os.path.join(out_dir, new_name)
     np.save(new_loc, degraded_array)
         
@@ -90,7 +114,8 @@ if __name__ == "__main__":
     print(f"Found {len(npy_files)} .npy files to process in parallel.\n")
 
     num_cpus = multiprocessing.cpu_count()
-    max_workers = max(1, int(num_cpus * 0.8))
+    #max_workers = max(1, int(num_cpus * 0.8))
+    max_workers = 1
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
         list(tqdm(executor.map(process_file, npy_files), total=len(npy_files)))
 
