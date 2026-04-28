@@ -50,4 +50,42 @@ This script is useful for inspecting how different SNR levels affect the radar w
 ### Note: make_dataset.py currently writes output files to processed/, while plot_dataset.py reads from degraded/. Rename one directory or update the path in plot_dataset.py so the scripts use the same processed-data folder.
 
 
+### `requirements.txt`
+Pinned `pip` dependency list for running the scripts and notebook. Includes NumPy, SciPy, Matplotlib, OpenCV, scikit-learn, PyTorch, TorchVision, CUDA-related PyTorch packages, and tqdm.
+
+### MultiChannelRESM.yml
+
+Conda environment file for reproducing the development environment. It defines a Python 3.10 environment named MultiChannelRESM, with Jupyter/IPython support and the same core ML, plotting, and signal-processing packages used by the project.
+
+Create the environment with:
+
+conda env create -f MultiChannelRESM.yml
+conda activate MultiChannelRESM
+
+
+### VGG13-Waveform-Classification-Example.ipynb
+
+Example Jupyter notebook showing how to train and evaluate a VGG13-style PyTorch classifier on RadarML spectrograms.
+
+The notebook:
+
+- converts processed RadarML .npy files into spectrogram image datasets;
+- creates train/test folders organised by ADC channel and waveform class;
+- uses SNR values ≥ 0 dB for training and all SNR values for testing;
+- defines a custom PyTorch SpectrogramDataset;
+- implements a single-channel VGG13-style CNN;
+- trains the model using cross-entropy loss and Adam;
+- saves best and latest model weights;
+- evaluates performance with per-SNR confusion matrices.
+
+Expected input folder:
+
+processed/
+
+Generated output folders/files include:
+
+SpectrogramData/
+weights/
+adc*_confusion_matrix_snr_*dB.png
+
 
