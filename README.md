@@ -47,4 +47,7 @@ Spectrogram
 This script is useful for inspecting how different SNR levels affect the radar waveform data.
 
 
+### Note: make_dataset.py currently writes output files to processed/, while plot_dataset.py reads from degraded/. Rename one directory or update the path in plot_dataset.py so the scripts use the same processed-data folder.
+
+
 
