@@ -11,7 +11,7 @@ https://rdr.ucl.ac.uk/articles/dataset/RadarML_Dataset/30752767?file=60005198
 ## Python scripts
 
 ### `make_dataset.py`
-Creates the degraded RadarML dataset from raw `.npy` files. The script expects input files in an `unprocessed/` directory and writes processed outputs to `processed/`. For each raw file, it loads three-channel interleaved I/Q radar data, generates noisy versions across predefined SNR levels from +30 dB to -30 dB, and stores the result as a 4D NumPy array with shape:
+Creates the full RadarML dataset with a range of SNRs using additive noise to degrade the initial full SNR examples. These are created from the raw `.npy` files. The script expects input files in an `unprocessed/` directory and writes processed outputs to `processed/`. For each raw file, it loads three-channel interleaved I/Q radar data, generates noisy versions across predefined SNR levels from +30 dB to -30 dB, and stores the result as a 4D NumPy array with shape:
 
 `[channel, SNR index, pulse/repeat, interleaved samples]`
 
