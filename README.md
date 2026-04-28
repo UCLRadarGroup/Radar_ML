@@ -34,8 +34,17 @@ Spectrogram
 
 This script is useful for checking the structure and quality of the raw radar waveform files before creating the degraded dataset.
 
-Run with:
+### plot_dataset.py
 
-python plot_raw_data.py
+Visualises the degraded/processed RadarML dataset. The script expects processed .npy files in a degraded/ directory, then iterates through channels and SNR levels, plotting the first pulse for each SNR.
+
+For each channel/SNR combination it generates:
+
+Power versus time
+I, Q, magnitude, and phase versus time
+Spectrogram
+
+This script is useful for inspecting how different SNR levels affect the radar waveform data.
+
 
 
