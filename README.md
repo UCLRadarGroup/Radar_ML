@@ -8,4 +8,24 @@ Ritchie, Matt; White, Ryan; Hosford, Adam (2025). RadarML Dataset. University Co
 URL for dataset download
 https://rdr.ucl.ac.uk/articles/dataset/RadarML_Dataset/30752767?file=60005198
 
+## Python scripts
+
+### `make_dataset.py`
+Creates the degraded RadarML dataset from raw `.npy` files. The script expects input files in an `unprocessed/` directory and writes processed outputs to `processed/`. For each raw file, it loads three-channel interleaved I/Q radar data, generates noisy versions across predefined SNR levels from +30 dB to -30 dB, and stores the result as a 4D NumPy array with shape:
+
+`[channel, SNR index, pulse/repeat, interleaved samples]`
+
+Key settings:
+- `repeats_per_snr = 300`
+- Sampling frequency: `fs = 3.84e9 / 32`
+- Channels: `ADC0`, `ADC2`, `ADC4`
+- SNR levels: `30, 27, ..., -30 dB`
+- Uses deterministic per-file/per-SNR/per-pulse random seeds for reproducibility.
+
+Run with:
+
+```bash
+python make_dataset.py
+
+
 
