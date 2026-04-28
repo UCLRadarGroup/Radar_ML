@@ -22,10 +22,20 @@ Key settings:
 - SNR levels: `30, 27, ..., -30 dB`
 - Uses deterministic per-file/per-SNR/per-pulse random seeds for reproducibility.
 
+plot_raw_data.py
+
+Visualises raw RadarML .npy files before degradation. The script searches for .npy files in the same directory as the script, loads each file, and plots the final acquisition/pulse for each radar channel.
+
+For each selected pulse it generates:
+
+Power versus time
+I, Q, magnitude, and phase versus time
+Spectrogram
+
+This script is useful for checking the structure and quality of the raw radar waveform files before creating the degraded dataset.
+
 Run with:
 
-```bash
-python make_dataset.py
-
+python plot_raw_data.py
 
 
