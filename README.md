@@ -8,6 +8,8 @@ Ritchie, Matt; White, Ryan; Hosford, Adam (2025). RadarML Dataset. University Co
 URL for dataset download
 https://rdr.ucl.ac.uk/articles/dataset/RadarML_Dataset/30752767?file=60005198
 
+# The UCLRESM.zip file password is "UCLRESM"
+
 ## Python scripts
 
 ### `make_dataset.py`
