@@ -114,8 +114,9 @@ if __name__ == "__main__":
     print(f"Found {len(npy_files)} .npy files to process in parallel.\n")
 
     num_cpus = multiprocessing.cpu_count()
-    #max_workers = max(1, int(num_cpus * 0.8))
-    max_workers = 1
+    max_workers = max(1, int(num_cpus * 0.8))
+    # Uncomment to disable multi-processing of the raw iq data
+    # max_workers = 1 
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
         list(tqdm(executor.map(process_file, npy_files), total=len(npy_files)))
 
