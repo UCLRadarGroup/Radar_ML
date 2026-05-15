@@ -15,7 +15,7 @@ target_SNR_dBs = [30, 27, 24, 21, 18, 15, 12, 9, 6, 3, 0, -3, -6, -9, -12, -15, 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Get the directory where the processed numpy files are located
-numpy_dir = os.path.join(script_dir, "degraded") 
+numpy_dir = os.path.join(script_dir, "processed") 
 
 # Loop through all .npy files in the script directory
 for fname in os.listdir(numpy_dir):
