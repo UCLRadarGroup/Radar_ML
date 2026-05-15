@@ -1,93 +1,113 @@
-# RadarML
-A GIT repo for the Radar_ML dataset, read-me and code
+# Write-up in progress - contact ryan.white.23@ucl.ac.uk with questions 
 
-This GIT repo links to the dataset release of the UCL RadarML dataset.
-Reference:
-Ritchie, Matt; White, Ryan; Hosford, Adam (2025). RadarML Dataset. University College London. Dataset. https://doi.org/10.5522/04/30752767.v1
+---
 
-URL for dataset download
-https://rdr.ucl.ac.uk/articles/dataset/RadarML_Dataset/30752767?file=60005198
+# RadarML 
 
-# The UCLRESM.zip file password is "UCLRESM"
+RadarML dataset a publicly available dataset of experimentally captured modulated radar pulses recorded over-the-air across multiple independent receive channels, enabling researching into multi-channel waveform classification.
 
-## Python scripts
+The dataset was captured on the UCL ARESTOR platform which is a Radio-Frequency-System-on-a-chip (RFSoC). Each waveform was designed based on its central frequency, bandwidth, duration and modulation type. The overall dataset contains over 2 million waveforms across 7 different modulation types. The goal of this dataset is to enable comparative analysis of Radar Modulation Classification techniques on real data and stimulate research into multi-channel signal detection methods.
 
-### `make_dataset.py`
-Creates the full RadarML dataset with a range of SNRs using additive noise to degrade the initial full SNR examples. These are created from the raw `.npy` files. The script expects input files in an `unprocessed/` directory and writes processed outputs to `processed/`. For each raw file, it loads three-channel interleaved I/Q radar data, generates noisy versions across predefined SNR levels from +30 dB to -30 dB, and stores the result as a 4D NumPy array with shape:
+---
 
-`[channel, SNR index, pulse/repeat, interleaved samples]`
+## Getting Started
 
-Key settings:
-- `repeats_per_snr = 300`
-- Sampling frequency: `fs = 3.84e9 / 32`
-- Channels: `ADC0`, `ADC2`, `ADC4`
-- SNR levels: `30, 27, ..., -30 dB`
-- Uses deterministic per-file/per-SNR/per-pulse random seeds for reproducibility.
+### 1. Download the dataset
 
-### plot_raw_data.py
+The dataset can be downloaded from the following link:
 
-Visualises raw RadarML .npy files before degradation. The script searches for .npy files in the same directory as the script, loads each file, and plots the final acquisition/pulse for each radar channel.
+https://doi.org/10.5522/04/30752767
 
-For each selected pulse it generates:
+The password for the zip file is "**UCLRESM**"
 
-Power versus time
-I, Q, magnitude, and phase versus time
-Spectrogram
+### 2. Clone the repository into the dataset folder
 
-This script is useful for checking the structure and quality of the raw radar waveform files before creating the degraded dataset.
+After extracing the zip file, run:
 
-### plot_dataset.py
+```bash
+cd UCLRESM
+git clone https://github.com/UCLRadarGroup/Radar_ML.git
+cd Radar_ML
+```
 
-Visualises the degraded/processed RadarML dataset. The script expects processed .npy files in a degraded/ directory, then iterates through channels and SNR levels, plotting the first pulse for each SNR.
+### 3. Set up the Conda environment
 
-For each channel/SNR combination it generates:
+A pre-configured Conda environment with all the required libraries is provided to ensure reproducibility.
 
-Power versus time
-I, Q, magnitude, and phase versus time
-Spectrogram
+Assuming conda is available, this can be installed by running the following:
 
-This script is useful for inspecting how different SNR levels affect the radar waveform data.
-
-
-### Note: make_dataset.py currently writes output files to processed/, while plot_dataset.py reads from degraded/. Rename one directory or update the path in plot_dataset.py so the scripts use the same processed-data folder.
-
-
-### `requirements.txt`
-Pinned `pip` dependency list for running the scripts and notebook. Includes NumPy, SciPy, Matplotlib, OpenCV, scikit-learn, PyTorch, TorchVision, CUDA-related PyTorch packages, and tqdm.
-
-### MultiChannelRESM.yml
-
-Conda environment file for reproducing the development environment. It defines a Python 3.10 environment named MultiChannelRESM, with Jupyter/IPython support and the same core ML, plotting, and signal-processing packages used by the project.
-
-Create the environment with:
-
+```bash
 conda env create -f MultiChannelRESM.yml
 conda activate MultiChannelRESM
+```
 
+---
 
-### VGG13-Waveform-Classification-Example.ipynb
+## Building the Dataset
 
-Example Jupyter notebook showing how to train and evaluate a VGG13-style PyTorch classifier on RadarML spectrograms.
+The raw dataset is collected at a high signal-to-noise ratio (SNR) to allow arbitrary levels of additive white Gaussian noise (AWGN) to be added, enabling controlled testing across a wide range of SNR conditions.
+
+### `make_dataset.py`
+
+This script is the most important. It builds the SNR degraded dataset by first loading the raw ".npy" data and applying additive white gaussian noise (generated with deterministic randomness for repeatability).
+
+If desired, the range of SNRs and the repeats per SNR can be modified in the python script.
+
+```bash
+python make_dataset.py
+```
+
+This will create an additional folder labelled "processed".
+
+### `plot_dataset.py`
+
+This script enables visualisation of the degraded RadarML dataset. The script expects processed ".npy" files in a processed/ directory, it then iterates through channels and SNR levels, plotting the first pulse for each SNR.
+
+- The following plots are generated:
+
+  - Power in decibels against time
+  - In-phase (I), Quadrature (Q), Magnitude and phase components against time
+  - Spectrogram
+
+```bash
+python plot_dataset.py
+```
+
+### `VGG13-Waveform-Classification-Example.ipynb`
+
+Provided is an example "Jupyter notebook" showing how to generate spectrograms from the degraded dataset and then use this to train and evaluate a custom VGG13-style PyTorch classifier from scratch.
 
 The notebook:
 
-- converts processed RadarML .npy files into spectrogram image datasets;
-- creates train/test folders organised by ADC channel and waveform class;
-- uses SNR values ≥ 0 dB for training and all SNR values for testing;
-- defines a custom PyTorch SpectrogramDataset;
-- implements a single-channel VGG13-style CNN;
-- trains the model using cross-entropy loss and Adam;
-- saves best and latest model weights;
-- evaluates performance with per-SNR confusion matrices.
+- Converts processed RadarML .npy files into spectrogram image datasets;
+- Creates train/test folders organised by ADC channel and waveform class;
+- Uses SNR values ≥ 0 dB for training and all SNR values for testing;
+- Defines a custom PyTorch SpectrogramDataset;
+- Implements a single-channel VGG13-style CNN;
+- Trains the model using cross-entropy loss and Adam;
+- Saves best and latest model weights;
+- Evaluates performance with per-SNR confusion matrices.
 
-Expected input folder:
+---
 
-processed/
+## Repository Structure
 
-Generated output folders/files include:
+```
+Radar_ML/
+├── plot_raw_data.py                                     # Visualisation script (see below)
+├── make_dataset.py                                      # Dataset construction script (see below)
+├── plot_dataset.py                                      # Visualisation script (see below)
+├── VGG13-Waveform-Classification-Example.ipynb          # Worked example notebook (see below)
+├── environment.yml                                      # Conda environment specification
+└── LICENSE.md                                           # License terms
+```
 
-SpectrogramData/
-weights/
-adc*_confusion_matrix_snr_*dB.png
+## License
 
+This dataset and code are released under the terms described in [`LICENSE.md`](LICENSE.md).
 
+---
+
+## Contact
+
+For questions or issues, please open a GitHub issue or contact: m.ritchie@ucl.ac.uk.
