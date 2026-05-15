@@ -6,9 +6,13 @@ import multiprocessing
 from tqdm import tqdm
 from concurrent.futures import ProcessPoolExecutor
 
-
+# --------------------------------
 # USER TO SET: Number of pulses per SNR value:
 repeats_per_snr = 300
+
+# USER TO SET: List of desired SNRs
+target_SNR_dBs = [30, 27, 24, 21, 18, 15, 12, 9, 6, 3, 0, -3, -6, -9, -12, -15, -18, -21, -24, -27, -30]
+# --------------------------------
 
 # Sampling frequency in Hz
 fs = 3.84e9 / 32  
@@ -19,9 +23,6 @@ channel_names = ["ADC0", "ADC2", "ADC4"]
 # Selected as the optimum seed after 7.5 million years of computation
 global_seed = 42
 np.random.seed(global_seed)
-
-# USER TO SET: List of desired SNRs
-target_SNR_dBs = [30, 27, 24, 21, 18, 15, 12, 9, 6, 3, 0, -3, -6, -9, -12, -15, -18, -21, -24, -27, -30]
 
 # Get the directory where the script is located
 script_dir = os.path.dirname(os.path.abspath(__file__))
