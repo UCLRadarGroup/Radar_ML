@@ -57,10 +57,10 @@ def process_file(fname):
                 noise = cmplx_data[0:int((20e-6)*fs)]
                 noise_power = np.mean(np.abs(noise) ** 2)
                 signal = cmplx_data[int((21e-6)*fs):int((119e-6)*fs)]
-                signal_power = np.mean(np.abs(signal) ** 2)
+                signal_power = np.mean(np.abs(signal) ** 2) - noise_power
 
                 target_SNR = 10 ** (target_SNR_dB / 10)
-                additive_noise_power = signal_power / target_SNR
+                additive_noise_power = (signal_power / target_SNR) - noise_power
 
                 # Generate Gaussian noise
                 length = len(cmplx_data)
