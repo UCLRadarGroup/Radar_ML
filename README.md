@@ -10,15 +10,27 @@ The dataset was captured on the UCL ARESTOR platform which is a Radio-Frequency-
 
 ---
 
+## Repository Structure
+
+```
+Radar_ML/
+├── plot_raw_data.py                                     # Visualisation script (see below)
+├── make_dataset.py                                      # Dataset construction script (see below)
+├── plot_dataset.py                                      # Visualisation script (see below)
+├── VGG13-Waveform-Classification-Example.ipynb          # Worked example notebook (see below)
+├── environment.yml                                      # Conda environment specification
+└── LICENSE.md                                           # License terms
+```
+
 ## Getting Started
 
 ### 1. Download the dataset
 
 The dataset can be downloaded from the following link:
 
-https://doi.org/10.5522/04/30752767
+- https://doi.org/10.5522/04/30752767
 
-The password for the zip file is "**UCLRESM**"
+The password to extract the zip file is: **UCLRESM**
 
 ### 2. Clone the repository into the dataset folder
 
@@ -53,15 +65,11 @@ This script is the most important. It builds the SNR degraded dataset by first l
 
 If desired, the range of SNRs and the repeats per SNR can be modified in the python script.
 
-```bash
-python make_dataset.py
-```
-
 This will create an additional folder labelled "processed".
 
 ### `plot_dataset.py`
 
-This script enables visualisation of the degraded RadarML dataset. The script expects processed ".npy" files in a processed/ directory, it then iterates through channels and SNR levels, plotting the first pulse for each SNR.
+This script enables visualisation of the degraded RadarML dataset. The script expects processed ".npy" files in the "./processed" directory, it then iterates through channels and SNR levels, plotting the first pulse for each SNR.
 
 - The following plots are generated:
 
@@ -69,38 +77,24 @@ This script enables visualisation of the degraded RadarML dataset. The script ex
   - In-phase (I), Quadrature (Q), Magnitude and phase components against time
   - Spectrogram
 
-```bash
-python plot_dataset.py
-```
+## Training a baseline model
 
 ### `VGG13-Waveform-Classification-Example.ipynb`
 
 Provided is an example "Jupyter notebook" showing how to generate spectrograms from the degraded dataset and then use this to train and evaluate a custom VGG13-style PyTorch classifier from scratch.
 
-The notebook:
+The notebook performs the following steps when executed sequentially:
 
 - Converts processed RadarML .npy files into spectrogram image datasets;
 - Creates train/test folders organised by ADC channel and waveform class;
 - Uses SNR values ≥ 0 dB for training and all SNR values for testing;
 - Defines a custom PyTorch SpectrogramDataset;
 - Implements a single-channel VGG13-style CNN;
-- Trains the model using cross-entropy loss and Adam;
-- Saves best and latest model weights;
+- Trains the model using cross-entropy loss and Adam optimiser;
+- Saves the best and latest model weights;
 - Evaluates performance with per-SNR confusion matrices.
 
 ---
-
-## Repository Structure
-
-```
-Radar_ML/
-├── plot_raw_data.py                                     # Visualisation script (see below)
-├── make_dataset.py                                      # Dataset construction script (see below)
-├── plot_dataset.py                                      # Visualisation script (see below)
-├── VGG13-Waveform-Classification-Example.ipynb          # Worked example notebook (see below)
-├── environment.yml                                      # Conda environment specification
-└── LICENSE.md                                           # License terms
-```
 
 ## License
 
