@@ -98,7 +98,7 @@ The notebook performs the following steps when executed sequentially:
 
 ## License
 
-This dataset and code are released under the terms described in [`LICENSE.md`](LICENSE.md).
+This dataset and code are released under the terms described in [`LICENSE.md`](LICENSE).
 
 ---
 
