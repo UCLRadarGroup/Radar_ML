@@ -1,91 +1,107 @@
-# RadarML Lite
+# Write-up in progress - contact ryan.white.23@ucl.ac.uk with questions 
 
-RadarML contains radar waveforms recorded over the air using UCL's ARESTOR
-RFSoC platform. This branch supports a reduced, single-receiver dataset for
-learning and comparing radar modulation classifiers. Configurations vary in
-modulation, pulse duration, bandwidth and centre frequency.
+---
 
-**Taking part in the hackathon? Start with the [Hackathon guide](hackathon/README.md)**
-for setup, signal loading, SNR expansion, evaluation and submission guidance.
+# RadarML 
 
-## The reduced dataset
+RadarML dataset a publicly available dataset of experimentally captured modulated radar pulses recorded over-the-air across multiple independent receive channels, enabling researching into multi-channel waveform classification.
 
-The compact archive preserves recorded samples without adding synthetic noise.
-Participants can generate different signal-to-noise ratio (SNR) conditions locally,
-keeping the download smaller than a dataset containing every noise variant.
-Original receiver noise remains; these are not noise-free signals.
+The dataset was captured on the UCL ARESTOR platform which is a Radio-Frequency-System-on-a-chip (RFSoC). Each waveform was designed based on its central frequency, bandwidth, duration and modulation type. The overall dataset contains over 2 million waveforms across 7 different modulation types. The goal of this dataset is to enable comparative analysis of Radar Modulation Classification techniques on real data and stimulate research into multi-channel signal detection methods.
 
-| Property | RadarML Lite compact release |
-| --- | --- |
-| Waveform configurations | 660 |
-| Receiver | ADC0, one of the original three channels |
-| Pulses per configuration | First 100 recorded pulses, source indices 0–99 |
-| Total pulses | 66,000 |
-| Classes | `barker`, `cw`, `fmcw`, `fsk`, `hyp`, `nlfm`, `quad` |
-| Samples per pulse | 16,800 complex samples at 120 MS/s |
-| Array format | int16, `(1, 100, 33600)`, interleaved I/Q |
-| Compact ZIP | Approximately 2.54 GB |
-| Extracted signal arrays | Approximately 4.44 GB |
+---
 
-The original archive has three receivers, ADC0, ADC2 and ADC4, with 1,000 pulses
-per receiver for 648 configurations and 8,000 for the remaining 12. RadarML Lite
-selects one receiver and 100 pulses from each configuration.
+## Repository Structure
 
-Expanding to 13 requested SNR settings (+30 to −30 dB in 5 dB steps) creates
-858,000 examples and approximately 57.66 GB of arrays. The compact arrays use
-13 times less storage, a reduction of 92.3%. Noise variants are not additional
-independent captures.
-
-## Download and quick start
-
-Obtain **`recorded_dataset.zip` from the hackathon organizers**. A public compact
-download link has not yet been added here. The full source archive is available
-separately from the [RadarML dataset record](https://doi.org/10.5522/04/30752767.v1);
-participants using the compact release do not need to download it.
-
-Extract the compact ZIP and open a terminal inside its `recorded_dataset` folder.
-With Python 3.9 or newer installed:
-
-```bash
-python -m pip install numpy
-python compact_dataset.py expand --input . --output ../expanded
+```
+Radar_ML/
+├── plot_raw_data.py                                     # Visualisation script (see below)
+├── make_dataset.py                                      # Dataset construction script (see below)
+├── plot_dataset.py                                      # Visualisation script (see below)
+├── VGG13-Waveform-Classification-Example.ipynb          # Worked example notebook (see below)
+├── environment.yml                                      # Conda environment specification
+└── LICENSE.md                                           # License terms
 ```
 
-The expansion scripts are **included in the compact ZIP**. Use those bundled
-scripts together; the repository's original preprocessing scripts expect a
-different input format. Full expansion requires **57.66 GB of additional space**.
-See the [guide](hackathon/README.md) for environment setup, a small first check
-and loading examples before expanding everything.
+## Getting Started
 
-To clone this branch:
+### 1. Download the dataset
+
+The dataset can be downloaded from the following link:
+
+- https://doi.org/10.5522/04/30752767
+
+The password to extract the zip file is: **UCLRESM**
+
+### 2. Clone the repository into the dataset folder
+
+After extracing the zip file, run:
 
 ```bash
-git clone --branch radar-ml-lite --single-branch https://github.com/UCLRadarGroup/Radar_ML.git
+cd UCLRESM
+git clone https://github.com/UCLRadarGroup/Radar_ML.git
+cd Radar_ML
 ```
 
-## Repository contents
+### 3. Set up the Conda environment
 
-| Path | Purpose |
-| --- | --- |
-| [hackathon/README.md](hackathon/README.md) | Participant walkthrough and event protocol status |
-| [hackathon/](hackathon/) | Reduced-data preparation, plotting and shard-release utilities |
-| [make_dataset.py](make_dataset.py) | Original multi-channel SNR preprocessing |
-| [plot_raw_data.py](plot_raw_data.py), [plot_dataset.py](plot_dataset.py) | Original dataset visualizations |
-| [VGG13-Waveform-Classification-Example.ipynb](VGG13-Waveform-Classification-Example.ipynb) | Original spectrogram/classifier example |
-| [MultiChannelRESM.yml](MultiChannelRESM.yml), [requirements.txt](requirements.txt) | Original example environment and dependencies |
+A pre-configured Conda environment with all the required libraries is provided to ensure reproducibility.
 
-The original notebook and scripts are reference material; their data layout and
-split handling are not the compact hackathon workflow. NumPy is sufficient for
-compact loading and expansion. Install libraries for your method as needed;
-the original environment includes platform-specific dependencies.
+Assuming conda is available, this can be installed by running the following:
 
-## Attribution and licensing
+```bash
+conda env create -f MultiChannelRESM.yml
+conda activate MultiChannelRESM
+```
 
-Source: Ritchie, White and Hosford (2025),
-[RadarML, version 1](https://doi.org/10.5522/04/30752767.v1).
-See [LICENSE](LICENSE) for repository code terms and the dataset record for
-dataset licensing. Code licensing does not replace dataset terms.
+---
+
+## Building the Dataset
+
+The raw dataset is collected at a high signal-to-noise ratio (SNR) to allow arbitrary levels of additive white Gaussian noise (AWGN) to be added, enabling controlled testing across a wide range of SNR conditions.
+
+### `make_dataset.py`
+
+This script is the most important. It builds the SNR degraded dataset by first loading the raw ".npy" data and applying additive white gaussian noise (generated with deterministic randomness for repeatability).
+
+If desired, the range of SNRs and the repeats per SNR can be modified in the python script.
+
+This will create an additional folder labelled "processed".
+
+### `plot_dataset.py`
+
+This script enables visualisation of the degraded RadarML dataset. The script expects processed ".npy" files in the "./processed" directory, it then iterates through channels and SNR levels, plotting the first pulse for each SNR.
+
+- The following plots are generated:
+
+  - Power in decibels against time
+  - In-phase (I), Quadrature (Q), Magnitude and phase components against time
+  - Spectrogram
+
+## Training a baseline model
+
+### `VGG13-Waveform-Classification-Example.ipynb`
+
+Provided is an example "Jupyter notebook" showing how to generate spectrograms from the degraded dataset and then use this to train and evaluate a custom VGG13-style PyTorch classifier from scratch.
+
+The notebook performs the following steps when executed sequentially:
+
+- Converts processed RadarML .npy files into spectrogram image datasets;
+- Creates train/test folders organised by ADC channel and waveform class;
+- Uses SNR values ≥ 0 dB for training and all SNR values for testing;
+- Defines a custom PyTorch SpectrogramDataset;
+- Implements a single-channel VGG13-style CNN;
+- Trains the model using cross-entropy loss and Adam optimiser;
+- Saves the best and latest model weights;
+- Evaluates performance with per-SNR confusion matrices.
+
+---
+
+## License
+
+This dataset and code are released under the terms described in [`LICENSE.md`](LICENSE).
+
+---
 
 ## Contact
 
-Open a GitHub issue or contact m.ritchie@ucl.ac.uk.
+For questions or issues, please open a GitHub issue or contact: m.ritchie@ucl.ac.uk.
