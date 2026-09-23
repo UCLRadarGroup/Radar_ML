@@ -15,6 +15,42 @@ as noise increases. Use the exact labels `barker`, `cw`, `fmcw`, `fsk`, `hyp`,
 
 Compare tracks using identical split assignments and evaluation settings.
 
+## Participant workflow
+
+Follow these stages in order. The organizers will announce the event times,
+submission destination and permitted number of final submissions.
+
+| Stage | What you receive or use | What you do |
+| --- | --- | --- |
+| Start | `recorded_dataset.zip`, `split_manifest.csv` and `split_manifest.json` | Extract the compact data, place the manifest files beside the recordings, set up Python and inspect a pulse. |
+| Development | Published `train` and `validation` assignments | Choose a track, train using the 80 training pulses per configuration, and tune using the 20 validation pulses. Keep every augmented version in its source pulse's split. |
+| Model freeze | Your selected model and preprocessing | Save the model, configuration, random seeds and code revision. Record validation results before receiving the blind test. |
+| Blind evaluation | Organizer-issued `blind_test_participants.zip` | Extract into a separate folder, verify the checksum, load the anonymous test signals and run the frozen pipeline. Do not retrain or tune on test signals. |
+| Submission | Completed template and method materials | Submit predictions and the supporting items below. The organizer scores predictions using the private answer key. |
+
+The main dataset's 80/20 manifest contains **no test split**. The blind test is a
+separate release with different source pulses. Do not create a new test split
+from the supplied training/validation rows or run the older 60/20/20 workflow.
+
+### Final submission checklist
+
+- Save `predictions.csv` with exactly `sample_id,predicted_label` as the header,
+  using every ID in the blind-test template once and only the seven permitted
+  labels. Keep a separate prediction file for each track entered.
+- Include the saved model, preprocessing settings, code revision or code archive,
+  dependency versions and a command that reproduces inference.
+- State the track, training subset, training SNR settings and random seeds.
+- Include validation balanced accuracy by requested SNR and validation confusion
+  matrices. The organizer supplies final blind-test scores after scoring.
+- Report training time, inference time per pulse, hardware and model size.
+  Include signal preprocessing and time-frequency conversion in inference timing.
+- Give a brief account of the method and its main limitations. Disclose any
+  changes made after the model freeze; do not present those as the frozen result.
+
+There is no participant answer key for the blind evaluation. Do not attempt to
+recover labels from the original public archive. A deadline, upload portal and
+organizer-run model interface have not yet been specified in this guide.
+
 ## Release and event status
 
 The compact release includes recorded arrays, JSON metadata, expansion scripts,
