@@ -26,9 +26,10 @@ these newly published files.
 
 The fixed split uses **80 training and 20 validation pulses per recording**:
 52,800 training and 13,200 validation source pulses across 660 recordings.
-**No final test set, submission template or scoring key is included in this
-split release.** Final testing arrangements must be supplied separately by the
-organizers. Report results on this split as validation performance.
+**This split contains training and validation only.** A separate blind test
+has now been created and verified; see [final evaluation](#7-final-evaluation-and-submission)
+for its contents and release sequence. Report results on the 80/20 split as
+validation performance.
 
 ### Using the split CSV
 
@@ -210,7 +211,7 @@ selection rule. Build a complete training-to-prediction pipeline and evaluate
 on validation before scaling. Record seeds, SNRs, settings, dataset version,
 runtime and hardware. Freeze preprocessing and model choices before final testing.
 
-Training may use a subset of SNRs. Full event evaluation is proposed across all
+Training may use a subset of SNRs. The blind test evaluates across all
 13 settings. At each SNR, average recall across the seven classes. The main
 score averages those balanced accuracies across all 13 SNRs. Also report per-SNR
 scores and confusion matrices. A reduced class or SNR subset is not a full score.
@@ -224,27 +225,106 @@ Requested SNR therefore need not equal the achieved active-pulse SNR.
 
 ## 7. Final evaluation and submission
 
-Final test captures and submission arrangements will be provided or administered
-by the organizers. Do not use the original public archive to recover held-out
-labels. Private test-selection details and keys are not part of this guide.
+### Blind test contents
 
-If a prediction template is supplied, preserve every `sample_id` and predict
+The blind test dataset has been created and verified. It is supplied separately
+as `blind_test_participants.zip`; the large signal files are not stored in this
+Git repository. Obtain it from the organizers when final evaluation opens.
+
+| Property | Blind test v1 |
+| --- | --- |
+| Waveform configurations | 660 |
+| Held-out source pulses per configuration | 20 |
+| Total held-out source pulses | 13,200 |
+| Requested SNR settings per pulse | 13 |
+| Total test examples | 171,600 |
+| Modulation classes | `barker`, `cw`, `fmcw`, `fsk`, `hyp`, `nlfm`, `quad` |
+| Requested SNRs (dB) | +30, +25, +20, +15, +10, +5, 0, −5, −10, −15, −20, −25, −30 |
+| Receiver and sample format | ADC0; 16,800 complex samples at 120 MS/s; interleaved int16 I/Q |
+| Participant ZIP size | 11,546,404,564 bytes: approximately 11.55 GB / 10.75 GiB |
+| Disk space for ZIP plus extracted data | Approximately 23.1 GB |
+
+Every class appears at every requested SNR. Class counts are unequal. Test
+pulses have no source-identity or exact-signal overlap with the published
+training/validation data. They come from the same waveform configurations;
+this is not an unseen-configuration or unseen-hardware test.
+
+The participant package contains randomly ordered signal shards, anonymous IDs,
+a compatible loader, a blank submission template, checksums and aggregate
+preprocessing diagnostics. Per-example class labels, SNRs, original source
+identities and the answer key remain private with the organizers.
+
+ZIP SHA256:
+
+```text
+7d13639eea4aa936ad43f815d97b9d0a60cbaaf8fade6a472306c75a70223eab
+```
+
+### When participants receive it
+
+The recommended event sequence is:
+
+1. Start with the compact training/validation dataset and shared 80/20 manifest.
+2. Train and tune using training and validation data only.
+3. Freeze the model, preprocessing and settings; record or submit a fixed code
+   revision and model artifact as directed by the organizers.
+4. Receive the blind test, run inference without further training or tuning,
+   and submit predictions for organizer scoring.
+
+Organizers will announce the release time, deadline and submission limits.
+They may instead run submitted models themselves, keeping the test signals
+private. Providing test signals at the start would allow inspection to influence
+development and weaken the independence of final evaluation.
+
+Do not use the original public archive to recover held-out labels. Anonymization
+does not make the underlying public recordings secret. Private test-selection
+details and answer keys are not published in this repository.
+
+### Matching preprocessing and clipping
+
+The blind test uses the same SNR levels, power-estimation windows, noise-generation
+method and int16 clipping rules as the main dataset, with independent noise seeds.
+An int16 component is limited to −32,768 through +32,767. At low requested SNR,
+added noise can exceed these limits and is capped, changing the noise distribution.
+
+| Requested SNR | Fraction of I/Q component values clipped |
+| --- | ---: |
+| −20 dB | 0.000068% |
+| −25 dB | 0.239% |
+| −30 dB | 5.38% |
+
+No values clipped at −15 dB or above in this release. These are aggregate
+component-value rates, not percentages of pulses. At +30 dB, 4,400 of 13,200
+examples had unattainable targets and received no added noise. Report results
+against **requested SNR**, not guaranteed achieved active-pulse SNR. The package's
+`preprocessing_diagnostics.json` contains the full aggregate counts.
+
+### Load and submit
+
+From the extracted `blind_test` folder, with NumPy installed:
+
+```python
+from participant_loader import Samples
+
+samples = Samples("test")
+iq, info = samples[0]
+print(iq.shape, info["sample_id"])  # (16800,), anonymous ID
+```
+
+This loader supports the test shards; continue using the compact-data loading
+instructions above for training/validation. Fill `submission_template.csv`,
+preserve every `sample_id`, and predict
 exactly one permitted label for each test example, using columns:
 
 ```csv
 sample_id,predicted_label
 ```
 
-If a local scoring key is supplied, run from the repository root, replacing the
-example paths with your actual files:
-
-```bash
-python hackathon/score_submission.py --key /path/to/test_labels.csv --submission /path/to/predictions.csv --output score.json
-```
-
-The compact ZIP does not include a key or template. A distributed key makes this
-a labeled holdout: freeze your method first and disclose any subsequent tuning.
-For organizer-run inference, follow the published model-submission interface.
+Save the completed file as `predictions.csv` and return it to the organizers.
+Missing, duplicate or extra IDs, empty predictions and unknown labels are rejected.
+The organizers use a private answer key to compute balanced accuracy at each SNR
+and average across all 13 settings. The answer key is not distributed to teams.
+For organizer-run inference, follow the interface announced by the organizers.
 
 Provide reproduction instructions, code/settings, model, track, training subset
 and SNRs, score curves, confusion matrices and a short account of what worked.

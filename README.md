@@ -63,6 +63,22 @@ To clone this branch:
 git clone --branch radar-ml-lite --single-branch https://github.com/UCLRadarGroup/Radar_ML.git
 ```
 
+## Blind final evaluation
+
+A separate blind test has been created and verified: **13,200 held-out source
+pulses across 660 configurations**, each at **13 requested SNRs from +30 to
+−30 dB**, giving **171,600 examples**. All seven modulation classes appear at
+every SNR. Its participant ZIP is approximately **11.55 GB**; allow about
+**23.1 GB** to keep both the ZIP and extracted files.
+
+The recommended release is after teams train/validate and freeze their models.
+Organizers will provide distribution and submission arrangements; the test
+signals are not hosted in Git. The answer key and source mappings remain private.
+See the [blind test guide](hackathon/README.md#7-final-evaluation-and-submission)
+for loading, submission format, verification checksum and preprocessing caveats,
+including **5.38% I/Q-value clipping at −30 dB** under the same rules as the main
+dataset.
+
 ## Repository contents
 
 | Path | Purpose |
