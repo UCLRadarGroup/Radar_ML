@@ -1,0 +1,16 @@
+{
+  "format_version": 1,
+  "seed": 42,
+  "algorithm": "Rank pulses by SHA256 of UTF-8 seed:source_file:pulse_index; lowest 80 train, remaining 20 validation",
+  "index_definition": "Zero-based pulse axis index; matches original source index 0..99",
+  "compact_layout": "array[0, pulse_index, :]",
+  "expanded_layout": "array[0, snr_index, pulse_index, :]",
+  "filename_mapping": "Replace _recorded.npy with _single_channel.npy for expanded files",
+  "snr_rule": "All SNR variants inherit the original pulse split",
+  "files": 660,
+  "train": 52800,
+  "validation": 13200,
+  "final_test_included": false,
+  "manifest_sha256": "4ccc4937f4ba0e9993837bb26a5ba4463f1a880b689a753ad3a0e39b76ebafc7",
+  "verification": "CSV reloaded: complete coverage, unique identities, exactly 80/20 per file"
+}

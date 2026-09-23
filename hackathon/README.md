@@ -18,15 +18,61 @@ Compare tracks using identical split assignments and evaluation settings.
 ## Release and event status
 
 The compact release includes recorded arrays, JSON metadata, expansion scripts,
-a verification report and code license. It does **not** currently include a
-train/validation split manifest, test set, submission template or scoring key.
+a verification report and code license. Download the shared
+[split_manifest.csv](split_manifest.csv) and its
+[split_manifest.json](split_manifest.json) metadata from this folder and place
+both alongside the extracted recordings. Existing ZIP downloads may not contain
+these newly published files.
 
-The proposed protocol uses **80 training and 20 validation pulses per
-configuration**, with additional undistributed captures reserved for final
-testing. Organizers must publish the shared split manifest and final submission
-arrangements before competitive results can be compared. The inspection and
-expansion exercises below work now; a personal development split is not an
-official event split.
+The fixed split uses **80 training and 20 validation pulses per recording**:
+52,800 training and 13,200 validation source pulses across 660 recordings.
+**No final test set, submission template or scoring key is included in this
+split release.** Final testing arrangements must be supplied separately by the
+organizers. Report results on this split as validation performance.
+
+### Using the split CSV
+
+| Column | Meaning |
+| --- | --- |
+| `file` | Compact `_recorded.npy` filename relative to the extracted data folder |
+| `pulse_index` | Zero-based pulse index, 0–99 |
+| `split` | `train` or `validation` |
+
+Run from the extracted data folder with NumPy installed:
+
+```python
+import csv
+import numpy as np
+
+with open("split_manifest.csv", newline="", encoding="utf-8") as stream:
+    rows = list(csv.DictReader(stream))
+train_rows = [r for r in rows if r["split"] == "train"]
+validation_rows = [r for r in rows if r["split"] == "validation"]
+r = train_rows[0]
+array = np.load(r["file"], mmap_mode="r", allow_pickle=False)
+raw = array[0, int(r["pulse_index"]), :]
+iq = raw[0::2].astype(np.float32) + 1j * raw[1::2].astype(np.float32)
+print(iq.shape)  # (16800,)
+```
+
+For expanded arrays, replace `_recorded.npy` with `_single_channel.npy` and
+select `array[0, snr_index, pulse_index, :]`. Read SNR ordering from the expanded
+JSON sidecar. Every SNR variant or augmentation inherits its source pulse's
+assignment. Expansion does not apply the CSV automatically: training and
+evaluation code must enforce it. All 13 SNRs give 686,400 training and 171,600
+validation examples.
+
+The JSON records seed 42, the CSV checksum and the algorithm: rank pulses by
+SHA256 of UTF-8 `42:source_file:pulse_index`, using the original source filename
+from each recording's JSON; the lowest 80 hashes define training. Use the
+published assignments rather than creating another random split.
+
+Review on 23 September 2026 confirmed all 66,000 pulse identities were unique,
+all recordings had complete 0–99 coverage and exactly 80/20 assignments,
+array layouts matched, assignments reproduced and the CSV checksum matched.
+Both splits share waveform configurations, so validation measures new pulses
+within known configurations, not generalization to unseen configurations or
+hardware. Keep filenames and metadata out of model inputs.
 
 ## 1. Download and set up
 
@@ -140,7 +186,7 @@ per-configuration compact or expanded arrays.
 
 ## 5. Keep training and validation separate
 
-Use the event's shared split manifest when supplied. The proposed 80/20 split
+Use the published [split manifest](split_manifest.csv). The fixed 80/20 split
 contains 52,800 training and 13,200 validation source pulses. At all 13 SNRs,
 these become 686,400 and 171,600 examples respectively.
 
