@@ -38,12 +38,24 @@ independent captures.
 
 ## Download and quick start
 
-Obtain **`recorded_dataset.zip` from the hackathon organizers**. A public compact
-download link has not yet been added here. The full source archive is available
-separately from the [RadarML dataset record](https://doi.org/10.5522/04/30752767.v1);
-participants using the compact release do not need to download it.
+At the start of the hackathon:
 
-Extract the compact ZIP and open a terminal inside its `recorded_dataset` folder.
+1. Download **`recorded_dataset.zip`** from the
+   [UCL Radar ML - Lite dataset page](https://rdr.ucl.ac.uk/articles/dataset/Radar_ML_-_Lite/33977674).
+2. Download `split_manifest.csv` and `split_manifest.json` separately from that
+   page. If they are not yet publicly visible, use the repository copies:
+   [CSV](hackathon/split_manifest.csv) and [JSON](hackathon/split_manifest.json).
+   On GitHub, use **Download raw file** to save the actual file, not an HTML page.
+3. Extract the ZIP and put both manifest files inside the extracted
+   `recorded_dataset` folder, alongside the `.npy` files. No re-zipping is needed;
+   the original ZIP and its checksum remain unchanged.
+
+**Do not download, inspect or use `blind_test_participants.zip` until the
+organizers announce final evaluation after model freeze**, even if it is visible
+on the same download page. Train and tune only on the supplied 80/20 split.
+The original full RadarML archive is not needed.
+
+Open a terminal inside the extracted `recorded_dataset` folder.
 With Python 3.9 or newer installed:
 
 ```bash

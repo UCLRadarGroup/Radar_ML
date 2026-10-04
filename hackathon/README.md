@@ -53,12 +53,14 @@ organizer-run model interface have not yet been specified in this guide.
 
 ## Release and event status
 
-The compact release includes recorded arrays, JSON metadata, expansion scripts,
-a verification report and code license. Download the shared
-[split_manifest.csv](split_manifest.csv) and its
-[split_manifest.json](split_manifest.json) metadata from this folder and place
-both alongside the extracted recordings. Existing ZIP downloads may not contain
-these newly published files.
+The compact ZIP includes recorded arrays, JSON metadata, expansion scripts,
+a verification report and code license. The shared split is supplied separately
+as `split_manifest.csv` and `split_manifest.json`. Download both from the
+[UCL dataset page](https://rdr.ucl.ac.uk/articles/dataset/Radar_ML_-_Lite/33977674)
+or use this repository's [CSV](split_manifest.csv) and [JSON](split_manifest.json)
+copies. Place both alongside the extracted recordings; the ZIP does not need
+to be rebuilt. On GitHub, choose **Download raw file** rather than saving the
+file-preview web page.
 
 The fixed split uses **80 training and 20 validation pulses per recording**:
 52,800 training and 13,200 validation source pulses across 660 recordings.
@@ -113,9 +115,34 @@ hardware. Keep filenames and metadata out of model inputs.
 
 ## 1. Download and set up
 
-Obtain `recorded_dataset.zip` from the organizers and extract it. Open a terminal
-inside `recorded_dataset`, where `compact_dataset.py` is visible. Keep each
-`*_recorded.npy` beside its matching JSON. Use Python 3.9 or newer.
+Download only the development files at the start:
+
+1. Get `recorded_dataset.zip` from the
+   [public UCL Radar ML - Lite page](https://rdr.ucl.ac.uk/articles/dataset/Radar_ML_-_Lite/33977674).
+2. Get `split_manifest.csv` and `split_manifest.json` separately from that page.
+   If they are not visible, download the [CSV](split_manifest.csv) and
+   [JSON](split_manifest.json) from this repository using **Download raw file**.
+3. Extract the ZIP. Move both split files into the extracted `recorded_dataset`
+   folder, not beside the ZIP or into a separate split folder.
+4. Check the layout before running any training:
+
+```text
+recorded_dataset/
+  compact_dataset.py
+  make_dataset_hackathon.py
+  split_manifest.csv
+  split_manifest.json
+  ..._recorded.npy
+  ..._recorded.json
+```
+
+Do not download, inspect or use `blind_test_participants.zip` during development,
+even if it appears on the same page. Wait for the organizer's final-evaluation
+announcement after freezing your model and preprocessing. If you have already
+accessed test signals, tell the organizers before submitting final results.
+
+Open a terminal inside `recorded_dataset`, where `compact_dataset.py` is visible.
+Keep each `*_recorded.npy` beside its matching JSON. Use Python 3.9 or newer.
 
 On Windows, create an environment without needing PowerShell activation:
 
@@ -298,7 +325,7 @@ ZIP SHA256:
 
 ### When participants receive it
 
-The recommended event sequence is:
+The participant release sequence is:
 
 1. Start with the compact training/validation dataset and shared 80/20 manifest.
 2. Train and tune using training and validation data only.
@@ -311,6 +338,31 @@ Organizers will announce the release time, deadline and submission limits.
 They may instead run submitted models themselves, keeping the test signals
 private. Providing test signals at the start would allow inspection to influence
 development and weaken the independence of final evaluation.
+
+### Organizer publication checklist
+
+1. Add the split CSV and JSON as separate downloads beside the existing training
+   ZIP on the UCL record. Publish the updated record/version as required by the
+   repository; saving files in the account editor alone does not confirm public
+   availability. Use the public article URL in participant instructions, not
+   an `/account/articles/` editing URL.
+2. Check the public page while signed out: confirm that the training ZIP and both
+   split files can be downloaded and that the downloaded CSV matches the SHA256
+   recorded in `split_manifest.json`. Keep the existing training ZIP unchanged.
+3. Withhold the blind-test download until model freeze. If it is already public,
+   restrict/remove access where the repository permits, or contact repository
+   support. Check earlier public versions and direct links too; hiding a link
+   does not revoke prior downloads or establish that nobody accessed the data.
+4. Announce model-freeze and submission deadlines, then release the participant
+   test ZIP or run frozen models privately. Ask teams to disclose any early test
+   access. If strict pre-release secrecy is required after public exposure,
+   prepare a replacement held-out test release.
+5. Keep the answer key, original source mappings and private build files out of
+   the public dataset record and Git repository. Score submissions privately.
+
+Publication check on 4 October 2026: the public record listed the training ZIP
+and blind-test ZIP, but not the two split files. This is a dated observation;
+organizers should verify the public state again after publishing their changes.
 
 Do not use the original public archive to recover held-out labels. Anonymization
 does not make the underlying public recordings secret. Private test-selection
