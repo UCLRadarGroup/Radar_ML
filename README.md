@@ -83,8 +83,11 @@ pulses across 660 configurations**, each at **13 requested SNRs from +30 to
 every SNR. Its participant ZIP is approximately **11.55 GB**; allow about
 **23.1 GB** to keep both the ZIP and extracted files.
 
-The recommended release is after teams train/validate and freeze their models.
-Organizers will provide distribution and submission arrangements; the test
+The [seven-day event timetable](hackathon/EVENT_RULES.md) uses relative days:
+kick-off on Day 0 at 09:00, model freeze on Day 4 at 17:00, blind-test release
+on Day 5 at 09:00, and final submissions on Day 6 at 17:00 (Europe/London time).
+The separate blind-test record stays private until release. Organizers will
+announce the submission destination; the test
 signals are not hosted in Git. The answer key and source mappings remain private.
 See the [blind test guide](hackathon/README.md#7-final-evaluation-and-submission)
 for loading, submission format, verification checksum and preprocessing caveats,
@@ -95,7 +98,8 @@ dataset.
 
 | Path | Purpose |
 | --- | --- |
-| [hackathon/README.md](hackathon/README.md) | Participant walkthrough and event protocol status |
+| [hackathon/README.md](hackathon/README.md) | Participant walkthrough and event protocol |
+| [hackathon/EVENT_RULES.md](hackathon/EVENT_RULES.md) | Relative-day timetable, data/model rules, submission limits and tie-breaking |
 | [hackathon/](hackathon/) | Reduced-data preparation, plotting and shard-release utilities |
 | [make_dataset.py](make_dataset.py) | Original multi-channel SNR preprocessing |
 | [plot_raw_data.py](plot_raw_data.py), [plot_dataset.py](plot_dataset.py) | Original dataset visualizations |

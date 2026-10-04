@@ -17,8 +17,22 @@ Compare tracks using identical split assignments and evaluation settings.
 
 ## Participant workflow
 
-Follow these stages in order. The organizers will announce the event times,
-submission destination and permitted number of final submissions.
+Follow the [seven-day timetable and event rules](EVENT_RULES.md). Day 0 is the
+opening day; Day 6 is the final day. All times are Europe/London local time.
+The organizers announce the calendar start date and submission destination.
+
+| Milestone | Deadline |
+| --- | --- |
+| Kick-off and training begins | Day 0, 09:00 |
+| Model and preprocessing freeze | Day 4, 17:00 |
+| Blind-test release | Day 5, 09:00 |
+| Final predictions and report due | Day 6, 17:00 |
+| Scoring and wrap-up | Day 6, after 17:00 |
+
+Train from scratch on supplied training pulses only; use validation for tuning.
+External training data and pretrained weights are excluded. Each team may submit
+one final entry per track, with no blind-score feedback before submissions close.
+See the event rules for replacement submissions, permitted tools and tie-breaking.
 
 | Stage | What you receive or use | What you do |
 | --- | --- | --- |
@@ -48,8 +62,10 @@ from the supplied training/validation rows or run the older 60/20/20 workflow.
   changes made after the model freeze; do not present those as the frozen result.
 
 There is no participant answer key for the blind evaluation. Do not attempt to
-recover labels from the original public archive. A deadline, upload portal and
-organizer-run model interface have not yet been specified in this guide.
+recover labels from the original public archive. Deadlines, submission limits
+and ranking rules are in [EVENT_RULES.md](EVENT_RULES.md). The submission
+destination will be announced at kick-off; the standard workflow is participant
+inference followed by organizer scoring of predictions.
 
 ## Release and event status
 
@@ -325,7 +341,7 @@ ZIP SHA256:
 
 ### When participants receive it
 
-The participant release sequence is:
+The release sequence follows the [event timetable](EVENT_RULES.md):
 
 1. Start with the compact training/validation dataset and shared 80/20 manifest.
 2. Train and tune using training and validation data only.
@@ -334,10 +350,11 @@ The participant release sequence is:
 4. Receive the blind test, run inference without further training or tuning,
    and submit predictions for organizer scoring.
 
-Organizers will announce the release time, deadline and submission limits.
-They may instead run submitted models themselves, keeping the test signals
-private. Providing test signals at the start would allow inspection to influence
-development and weaken the independence of final evaluation.
+Freeze models by **Day 4, 17:00**. The blind test is released on **Day 5, 09:00**;
+final submissions close on **Day 6, 17:00**. Providing test signals at the start
+would allow inspection to influence development and weaken the independence of
+final evaluation. The organizer keeps labels private and scores predictions only
+after the submission deadline.
 
 ### Organizer publication checklist
 
@@ -353,16 +370,17 @@ development and weaken the independence of final evaluation.
    restrict/remove access where the repository permits, or contact repository
    support. Check earlier public versions and direct links too; hiding a link
    does not revoke prior downloads or establish that nobody accessed the data.
-4. Announce model-freeze and submission deadlines, then release the participant
-   test ZIP or run frozen models privately. Ask teams to disclose any early test
+4. Follow the Day 4 model freeze, Day 5 test release and Day 6 submission
+   deadlines in [EVENT_RULES.md](EVENT_RULES.md). Ask teams to disclose any early test
    access. If strict pre-release secrecy is required after public exposure,
    prepare a replacement held-out test release.
 5. Keep the answer key, original source mappings and private build files out of
    the public dataset record and Git repository. Score submissions privately.
 
-Publication check on 4 October 2026: the public record listed the training ZIP
-and blind-test ZIP, but not the two split files. This is a dated observation;
-organizers should verify the public state again after publishing their changes.
+The organizer has moved the blind-test ZIP to a separate record that is not yet
+public. Keep that record private until Day 5. Verify download permissions and
+the public training/split-file downloads before Day 0; earlier public exposure
+should still be handled as described above.
 
 Do not use the original public archive to recover held-out labels. Anonymization
 does not make the underlying public recordings secret. Private test-selection
@@ -412,7 +430,7 @@ Save the completed file as `predictions.csv` and return it to the organizers.
 Missing, duplicate or extra IDs, empty predictions and unknown labels are rejected.
 The organizers use a private answer key to compute balanced accuracy at each SNR
 and average across all 13 settings. The answer key is not distributed to teams.
-For organizer-run inference, follow the interface announced by the organizers.
+Follow the [submission limits and frozen-pipeline requirements](EVENT_RULES.md#submission-limits-and-required-files).
 
 Provide reproduction instructions, code/settings, model, track, training subset
 and SNRs, score curves, confusion matrices and a short account of what worked.
