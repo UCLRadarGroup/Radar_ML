@@ -44,7 +44,7 @@ class DegradeToSNR:
     def __call__(self, tensor: torch.Tensor, target_snr_db):
         # No SNR degradation requested
         if target_snr_db == "NA":
-            return tensor, None
+            return tensor
 
         signal_power, noise_power = self.measure(tensor)
         return self.degrade(tensor, signal_power, noise_power, target_snr_db)
