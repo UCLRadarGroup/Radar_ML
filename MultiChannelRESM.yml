@@ -1,4 +1,4 @@
-name: MultiChannelRESM
+name: modrec
 channels:
   - anaconda
   - defaults
@@ -107,4 +107,3 @@ dependencies:
       - torchvision==0.23.0
       - tqdm==4.67.1
       - triton==3.4.0
-prefix: /home/ryan/anaconda3/envs/MultiChannelRESM
