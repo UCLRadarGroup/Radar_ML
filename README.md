@@ -31,9 +31,7 @@ Radar_ML/
 
 ### 1. Download the dataset
 
-The dataset can be downloaded from:
-
-- https://doi.org/10.5522/04/30752767
+[The data can be downloaded from the UCL Research Data Repository by clicking this link](https://doi.org/10.5522/04/30752767)
 
 The password to extract the zip file is: **UCLRESM**
 
