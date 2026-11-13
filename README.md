@@ -119,6 +119,22 @@ An end-to-end example of training and evaluating `VGG13_net` on spectrograms of 
 
 ---
 
+## Citation
+
+If you use RadarML, please cite:
+
+```bibtex
+@misc{radarml,
+      title={RadarML: A Multi-Channel Over-the-Air Dataset of Common Radar Waveforms for ES Evaluation}, 
+      author={Ryan White and Adam Hosford and Matthew A. Ritchie},
+      year={2026},
+      eprint={2611.16786},
+      archivePrefix={arXiv},
+      primaryClass={eess.SP},
+      url={https://arxiv.org/abs/2611.16786}, 
+}
+```
+
 ## License
 
 This dataset and code are released under the GPL-3.0 license, described in [`LICENSE`](LICENSE).
