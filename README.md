@@ -1,5 +1,7 @@
 # RadarML
 
+![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
+
 RadarML is a publicly available dataset of experimentally captured, modulated radar pulses, recorded over the air across multiple independent receive channels. It is intended to support research into multi-channel radar waveform classification.
 
 The dataset was captured on the UCL ARESTOR platform, which is built on a Radio Frequency System-on-Chip (RFSoC). Each waveform was designed by its centre frequency, bandwidth, pulse width and modulation type. The overall dataset contains over 2 million waveforms across 7 modulation types. The goal of the dataset is to enable comparative analysis of radar modulation classification techniques on real data, and to stimulate research into multi-channel signal detection methods.
